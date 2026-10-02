@@ -7,6 +7,7 @@ from asteroidfield import AsteroidField
 from shot import Shot
 import sys
 
+
 def main():
     pygame.init()
     clock = pygame.time.Clock()
@@ -47,7 +48,6 @@ def main():
                     shot.kill
         pygame.display.flip()
         dt = clock.tick(60) / 1000
-
 
 
 if __name__ == "__main__":
