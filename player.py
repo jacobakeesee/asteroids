@@ -10,6 +10,7 @@ from constants import (
     PLAYER_TURN_SPEED,
 )
 from shot import Shot
+from triangle_hitbox import triangle_hitbox
 
 
 class Player(CircleShape):
@@ -24,7 +25,7 @@ class Player(CircleShape):
         a = self.position + forward * self.radius
         b = self.position - forward * self.radius - right
         c = self.position - forward * self.radius + right
-        return [a, b, c]
+        return [a, b, c]        
 
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
@@ -52,6 +53,7 @@ class Player(CircleShape):
         rotated_vector = unit_vector.rotate(self.rotation)
         rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
         self.position += rotated_with_speed_vector
+        
 
     def shoot(self) -> None:
         if self.shot_cooldown_timer > 0:
@@ -62,3 +64,15 @@ class Player(CircleShape):
         new_shot.velocity = (
             pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
         )
+
+    def collides_with(self, other) -> bool:
+            ab = self.triangle()[1] - self.triangle()[0]
+            bc = self.triangle()[2] - self.triangle()[1]
+            ac = self.triangle()[2] - self.triangle()[0]
+            ab_collision = triangle_hitbox(ab, other)
+            bc_collision = triangle_hitbox(bc, other)
+            ac_collision = triangle_hitbox(ac, other)
+            if ab_collision or bc_collision or ac_collision:
+                return True
+            else:
+                return False
